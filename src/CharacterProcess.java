@@ -3,7 +3,7 @@
 import java.awt.image.BufferedImage;
 
 
-public class BlockGrid {
+public class CharacterProcess {
 
 	/* This is where the image will be subsampled.
 	 * Should also include method for finding brightness.
@@ -11,7 +11,11 @@ public class BlockGrid {
 	
 	BufferedImage img;
 	
-	public BlockGrid(){
+	public CharacterProcess(){
+		img = new BufferedImage(300, 300, BufferedImage.TYPE_CUSTOM);
+	}
+	
+	public float getSubImageBrightness(){
 		 /*need image width, height and type
 		 it seems BufferedImage is usually instantiated through .getSubImage or another class,
 		 and never actually new BufferImage();
@@ -20,7 +24,6 @@ public class BlockGrid {
 		 */
 		
 		// Filled in with random parems for now
-		img = new BufferedImage(300, 300, BufferedImage.TYPE_CUSTOM);
 		
 		// Given image, get rgb value to determine brightness at coord(x,y).
 		// getRGB() returns back an unsigned integer in form 0xAARRGGBB
@@ -28,12 +31,22 @@ public class BlockGrid {
 		int rgbVal = img.getRGB(1, 1);
 		int r = (rgbVal)&0xFF;
 		int g = (rgbVal>>8)&0xFF;
-		int b = (rgbVal>>16)&0xFF;
+		int b = (rgbVal>>16)&0xFF;		
 		
+		float totalRgbVal = (r+g+b)/3;
 		
+		return totalRgbVal;
 	}
-
 	
+	/*
+	 * Given a character set's bitmap, want to find brightness of every character.
+	 * After, initializing this, want to have a way to match image pixel's brightness 
+	 * to character's image brightness.
+	 */	
 	
+	// Make a bitmap of all characters in a font
+	public void createCharBitmap(){
+		// Make sure to use only given ASCII values
+	}
 	
 }
