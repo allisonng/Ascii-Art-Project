@@ -12,7 +12,7 @@ public class CharacterProcess {
 	BufferedImage img;
 	
 	public CharacterProcess(){
-		img = new BufferedImage(300, 300, BufferedImage.TYPE_CUSTOM);
+		//img = new BufferedImage(300, 300, BufferedImage.TYPE_CUSTOM);
 	}
 	
 	public float getSubImageBrightness(){
@@ -45,8 +45,19 @@ public class CharacterProcess {
 	 */	
 	
 	// Make a bitmap of all characters in a font
-	public void createCharBitmap(){
-		// Make sure to use only given ASCII values
+	public void createDefaultAscii(){
+		// Make sure to use only given ASCII values [32, 126]
+		int start = 32;
+		int end = 126;
+		int arraySize = 126 - 32;
+		char[] charArray = new char[arraySize];
+		
+		for(int i=start; i<end; i++){
+			// Character.toString ((char) i);
+			char[i] = (char)i;
+		}
+		
+		
 	}
 	
 }
