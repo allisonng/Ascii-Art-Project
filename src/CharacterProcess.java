@@ -73,22 +73,23 @@ public class CharacterProcess {
 		// This will grab us our subimage.
 		// Pass the subimage into method that grabs brightness
 		int row = 0;
-		int col = 0;
+		int col;
 		for(int y=0; (y+blockHeight)<=bImg.getHeight(); y+=blockHeight){
-			System.out.print("row " + y);
+			System.out.print("row " + y + "   col");
 			
+			col = 0;
 			for(int x=0; (x+blockWidth)<=bImg.getWidth(); x+=blockWidth){
-//				if(x == 120){
-//					String str = "hello world";
-//				}
+				if(x == 504){
+					String str = "hello world";
+				}
 				brightnessMatrix[row][col] 
-						= getBrightnessOfBlock(bImg.getSubimage(x, y, x+blockWidth, y+blockHeight));
+						= getBrightnessOfBlock(bImg.getSubimage(y, x,blockWidth, blockHeight));
 //				System.out.print(brightnessMatrix[y][x] + " ");
 				col++;
-//				System.out.print("   col " + x);
+				System.out.print(" " + x);
 			}
 			row++;
-//			System.out.print("\n");
+			System.out.print("\n");
 		}
 		
 	}
