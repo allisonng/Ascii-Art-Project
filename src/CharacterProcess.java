@@ -144,7 +144,7 @@ public class CharacterProcess {
 
 		int rowHeight = brightnessImage.length;
 		int colHeight = brightnessImage[0].length;
-		System.out.println("rowheight: " + rowheight + "colheight" + colheight);
+		System.out.println("rowheight: " + rowHeight + "colheight" + colHeight);
 		// Create new file to write to
 		File file = new File("asciiArt.txt");
 		if(!file.exists()){
