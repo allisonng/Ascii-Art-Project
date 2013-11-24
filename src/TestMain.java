@@ -4,10 +4,9 @@ import java.io.IOException;
 
 
 
-public class Actions {
+public class TestMain {
 	public static void main(String[] args ) throws IOException {
 		
-		// TODO Auto-generated method stub
 
 		/*
 		for(int i=32; i<127; i++){
@@ -26,8 +25,11 @@ public class Actions {
 		
 		// Font myFont = new Font("Courier", Font.PLAIN, 12);
 		
+		BlockBrightness bb = new BlockBrightness();
+		double[][] dmatrix = bb.convertImageToBrightnessMatrix(bb.getImage());
 		CharacterProcess cp = new CharacterProcess();
-		float[][] test = cp.convertToBlocks(cp.getImage());
+		cp.convertImageToAscii(dmatrix);
+//		double[][] test = cp.convertImageToBrightnessMatrix(cp.getImage());
 		
 		
 /*		for(int i = 0; i<test.length; i++){
@@ -38,8 +40,8 @@ public class Actions {
 		}
 */
 
-		cp.convertImageToAscii(test);
-		System.out.print("done conversion? check for file");
+//		cp.convertImageToAscii(test);
+//		System.out.print("done conversion? check for file");
 		
 	
 		
