@@ -50,7 +50,32 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)
     {
-    	
+    	if (jComboBox2.getSelectedIndex() == 0)//naive black and white
+    	{
+    		
+    		
+    		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
+    		{
+    			
+    		}
+    		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
+    		{
+    			
+    		}
+    	}
+    	else if (jComboBox2.getSelectedIndex() == 1)//4 quadrant black and white
+    	{
+    		
+    		
+    		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
+    		{
+    			
+    		}
+    		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
+    		{
+    			
+    		}
+    	}
     }
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt)
@@ -95,7 +120,7 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
         jLabel1.setText("List of Algorithms:");
 
         jComboBox1.setEditable(true);
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Naive B&W", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { ".TXT", ".HTML" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
