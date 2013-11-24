@@ -2,7 +2,9 @@
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -51,13 +53,13 @@ public class CharacterProcess {
 	public BufferedImage getImage() throws IOException{
 
 		// NOT in ../src/ but in ../!!! GODDAMNIT
-		File img = new File("lena.bmp");
+		File img = new File("lena.jpg");
 		BufferedImage newImage = ImageIO.read(img); 
 		
 		return newImage;
 	}
 	
-	public void convertToBlocks(BufferedImage bImg){
+	public float[][] convertToBlocks(BufferedImage bImg){
 		/*
 		 * Divide the given picture into a grid of subblocks.
 		 * Each subblock will be 4x4 pixels, and each block will be converted into a character.
@@ -75,7 +77,7 @@ public class CharacterProcess {
 		int row = 0;
 		int col;
 		for(int y=0; (y+blockHeight)<=bImg.getHeight(); y+=blockHeight){
-			System.out.print("row " + y + "   col");
+//			System.out.print("row " + y + "   col");
 			
 			col = 0;
 			for(int x=0; (x+blockWidth)<=bImg.getWidth(); x+=blockWidth){
@@ -86,11 +88,13 @@ public class CharacterProcess {
 						= getBrightnessOfBlock(bImg.getSubimage(y, x,blockWidth, blockHeight));
 //				System.out.print(brightnessMatrix[y][x] + " ");
 				col++;
-				System.out.print(" " + x);
+//				System.out.print(" " + x);
 			}
 			row++;
-			System.out.print("\n");
+//			System.out.print("\n");
 		}
+		
+		return brightnessMatrix;
 		
 	}
 	
@@ -131,6 +135,49 @@ public class CharacterProcess {
 		return blockAverage;
 		
 		
+	}
+	
+	
+	// Now to translate from given brightnesses of image to character
+	public void convertImageToAscii(float[][] brightnessImage) throws IOException{
+		// brightnessImage represents the brightness of the image from the divided subimages
+
+		int rowHeight = brightnessImage.length;
+		int colHeight = brightnessImage[0].length;
+		System.out.println("rowheight: " + rowheight + "colheight" + colheight);
+		// Create new file to write to
+		File file = new File("asciiArt.txt");
+		if(!file.exists()){
+			file.createNewFile();
+		}
+		FileWriter fWriter = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter buffWriter = new BufferedWriter(fWriter);
+
+		for(int row=0; row<rowHeight; row++){
+			for(int col=0; col<colHeight; col++){
+				buffWriter.write(matchToChar(brightnessImage[row][col]));
+				
+			}
+			buffWriter.write("\n");
+		}
+		
+//		buffWriter.write();
+		buffWriter.close();
+		
+		
+	}
+	
+	public char matchToChar(float brightness){
+		// Brightness is the calculated average for a subimage.
+		// That entire subimage gets converted to a char based on the brightness.
+		
+		if(brightness >=100){
+			return '#';
+		}
+		else{
+			return ' ';
+		}
+				
 	}
 	
 	
