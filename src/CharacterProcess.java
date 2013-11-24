@@ -85,7 +85,7 @@ public class CharacterProcess {
 					String str = "hello world";
 				}
 				brightnessMatrix[row][col] 
-						= getBrightnessOfBlock(bImg.getSubimage(y, x,blockWidth, blockHeight));
+						= getBrightnessOfBlock(bImg.getSubimage(x, y,blockWidth, blockHeight));
 //				System.out.print(brightnessMatrix[y][x] + " ");
 				col++;
 //				System.out.print(" " + x);
