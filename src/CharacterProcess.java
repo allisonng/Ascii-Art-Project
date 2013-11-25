@@ -37,7 +37,7 @@ public class CharacterProcess {
 		
 	}
 		
-	public void convertImageToAscii(double[][] brightnessImage) throws IOException{
+	public void convertImageToAscii(int[][] brightnessImage) throws IOException{
 		// brightnessImage represents the brightness of the image from the divided subimages
 
 		int rowHeight = brightnessImage.length;
@@ -64,7 +64,7 @@ public class CharacterProcess {
 		
 	}
 	
-	private char matchToChar(double brightness){
+	private char matchToChar(int brightness){
 		// Brightness is the calculated average for a subimage.
 		// That entire subimage gets converted to a char below, based on the brightness.
 		
@@ -76,6 +76,121 @@ public class CharacterProcess {
 			return ' ';
 		}
 				
+	}
+	
+	public void convertQuadImageToAscii(int[][][] brightnessImage) throws IOException{
+		// brightnessImage represents the brightness of the image from the divided subimages
+
+		int rowHeight = brightnessImage.length;
+		int colHeight = brightnessImage[0].length;
+
+		// Create new file to write to
+		File file = new File("asciiArt.txt");
+		if(!file.exists()){
+			file.createNewFile();
+		}
+		FileWriter fWriter = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter buffWriter = new BufferedWriter(fWriter);
+
+		for(int row=0; row<rowHeight; row++){
+			for(int col=0; col<colHeight; col++){
+				buffWriter.write(matchToQuadrantChar(brightnessImage[row][col]));
+				
+			}
+			buffWriter.write("\n");
+		}
+		
+		buffWriter.close();
+		
+		
+	}
+	
+	private char matchToQuadrantChar(int[] quadrants)
+	{
+		// light = true; dark = false
+		boolean ul=true, ur=true, ll=true, lr=true;
+		
+		for(int quadrant = 0; quadrant < quadrants.length; quadrant++)
+		{
+			if(quadrants[quadrant] < 100)
+			{
+				if(quadrant==0)
+					ul = false;
+				else if(quadrant==1)
+					ur = false;
+				else if(quadrant==2)
+					ll = false;
+				else
+					lr = false;
+			}
+		}
+		
+		if(ul && ur && ll && lr)
+		{
+			return ' ';
+		}
+		// one square dark
+		if(ul && ur && !ll && lr)
+		{
+			return '.';
+		}
+		if(ul && ur && ll && !lr)
+		{
+			return '.';
+		}
+		if(!ul && ur && ll && lr)
+		{
+			return '`';
+		}
+		if(ul && !ur && ll && lr)
+		{
+			return '\'';
+		}
+		//two adjacent square dark
+		if(!ul && !ur && ll && lr)
+		{
+			return '"';
+		}
+		if(ul && ur && !ll && !lr)
+		{
+			return '_';
+		}
+		if(!ul && ur && !ll && lr)
+		{
+			return '[';
+		}
+		if(ul && !ur && ll && !lr)
+		{
+			return ']';
+		}
+		//two nonadjacent squares
+		if(!ul && ur && ll && !lr)
+		{
+			return '\\';
+		}
+		if(ul && !ur && !ll && lr)
+		{
+			return '/';
+		}
+		//three square dark
+		if(!ul && !ur && !ll && lr)
+		{
+			return 'P';
+		}
+		if(ul && !ur && !ll && !lr)
+		{
+			return 'J';
+		}
+		if(!ul && ur && !ll && !lr)
+		{
+			return 'L';
+		}
+		if(!ul && !ur && ll && !lr)
+		{
+			return '7';
+		}
+		//all dark
+		return '#';
 	}
 	
 	

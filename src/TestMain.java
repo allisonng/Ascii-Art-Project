@@ -26,7 +26,7 @@ public class TestMain {
 		// Font myFont = new Font("Courier", Font.PLAIN, 12);
 		
 		BlockBrightness bb = new BlockBrightness();
-		double[][] dmatrix = bb.convertImageToBrightnessMatrix(bb.getImage());
+		int[][] dmatrix = bb.convertImageToBrightnessMatrix(bb.getImage());
 		CharacterProcess cp = new CharacterProcess();
 		cp.convertImageToAscii(dmatrix);
 //		double[][] test = cp.convertImageToBrightnessMatrix(cp.getImage());

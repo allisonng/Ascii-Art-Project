@@ -14,7 +14,7 @@ public class ImgFilter extends FileFilter {
         
         if (getExtension(f) != null)
         {
-            if (getExtension(f).equals("bmp")||
+            if (getExtension(f).equals("bmp") ||
                 getExtension(f).equals("tiff")||
                 getExtension(f).equals("tif") ||
                 getExtension(f).equals("gif") ||

@@ -21,6 +21,9 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     private JFileChooser fileChooser;
     private BufferedImage inputImage;
     
+    private BlockBrightness blockIntensities;
+    private CharacterProcess characterProcessor;
+    
     private JButton jButton1;
     private JComboBox jComboBox1;
     private JComboBox jComboBox2;
@@ -37,6 +40,9 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
         
         fileChooser = new JFileChooser();
         inputImage = null;
+        
+        blockIntensities = new BlockBrightness();
+        characterProcessor = new CharacterProcess();
 		
 		Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(scr.width/2-this.getWidth()/2,scr.height/2-this.getHeight()/2);
@@ -48,15 +54,16 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     	
     }
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws IOException
     {
     	if (jComboBox2.getSelectedIndex() == 0)//naive black and white
     	{
-    		
+    		//DO CONVERSION HERE
+    		int[][] brightnessMatrix = blockIntensities.convertImageToBrightnessMatrix(inputImage);
     		
     		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
     		{
-    			
+    			characterProcessor.convertImageToAscii(brightnessMatrix);
     		}
     		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
     		{
@@ -65,7 +72,22 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     	}
     	else if (jComboBox2.getSelectedIndex() == 1)//4 quadrant black and white
     	{
+    		//DO CONVERSION HERE
+    		int[][][] quadrantBrightness = blockIntensities.convertImageToBrightnessQuadrants(inputImage);
     		
+    		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
+    		{
+    			characterProcessor.convertQuadImageToAscii(quadrantBrightness);
+    		}
+    		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
+    		{
+    			
+    		}
+    	}
+    	else if (jComboBox2.getSelectedIndex() == 2)//Many ASCII characters
+    	{
+    		//DO CONVERSION HERE
+    		int[][] brightnessMatrix = blockIntensities.convertImageToBrightnessMatrix(inputImage);
     		
     		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
     		{
@@ -84,8 +106,10 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     }
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
-        fileChooser.addChoosableFileFilter(new ImgFilter());
+    	ImgFilter pictureExtensionFilter = new ImgFilter();
+        fileChooser.addChoosableFileFilter(pictureExtensionFilter);
         fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(pictureExtensionFilter);
         
         int retVal = fileChooser.showOpenDialog(this);
         if(retVal == JFileChooser.APPROVE_OPTION){
@@ -119,7 +143,7 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
 
         jLabel1.setText("List of Algorithms:");
 
-        jComboBox1.setEditable(true);
+        //jComboBox1.setEditable(true);
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { ".TXT", ".HTML" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -130,7 +154,11 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
         jButton1.setText("CONVERT!");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                try {
+					jButton1ActionPerformed(evt);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
             }
         });
 
@@ -156,8 +184,8 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
             .addGap(0, 480, Short.MAX_VALUE)
         );
 
-        jComboBox2.setEditable(true);
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Naive B&W", "4 Quadrant B&W" }));
+        //jComboBox2.setEditable(true);
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Naive B&W", "4 Quadrant B&W", "Naive Greyscale" }));
         jComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox2ActionPerformed(evt);

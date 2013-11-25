@@ -26,26 +26,13 @@ private Image image;
     @Override
     protected void paintComponent(Graphics g)
     {
-        super.paintComponent(g);
-	    Dimension d = getSize();
-	    g.setColor(getBackground());
-	    g.fillRect(0, 0, d.width, d.height);
-	    if (image != null)
-            {
-	    	g.drawImage(image, 0, 0, d.width, d.height, 0, 0, image.getWidth(null), image.getHeight(null), this);
-            }
         
-//        super.paintComponent(g);
-//        
-//        if (image != null)
-//        {
-//            Dimension d = getSize();
-//            Insets insets = getInsets();
-//            int width = d.width - insets.left - insets.right;
-//            int height = d.height - insets.top - insets.left;
-//            float x = (width - image.getWidth(null)) * 0.5f;//alignmentX
-//            float y = (height - image.getHeight(null)) * 0.5f;//alignmentY
-//            g.drawImage(image, (int)x + insets.left, (int)y + insets.top, this);
-//        }
+        super.paintComponent(g);
+        
+        if (image != null)
+        {
+        	Dimension d = getSize();
+    		g.drawImage(image, 0, 0, d.width, d.height, null);
+        }
     }
 }
