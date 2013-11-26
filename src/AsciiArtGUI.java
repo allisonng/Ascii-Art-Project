@@ -56,6 +56,7 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws IOException
     {
+    	
     	if (jComboBox2.getSelectedIndex() == 0)//naive black and white
     	{
     		//DO CONVERSION HERE
@@ -63,7 +64,7 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     		
     		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
     		{
-    			characterProcessor.convertImageToAscii(brightnessMatrix);
+    			characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.BLACKWHITE);
     		}
     		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
     		{
@@ -91,7 +92,14 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     		
     		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
     		{
-    			
+    	    	CharacterSet cs = new CharacterSet();
+    	    	cs.selectionSortArrays();
+    	    	cs.removeArrayDuplicates();
+    	    	characterProcessor.chars = cs.getChars();
+    	    	characterProcessor.density = cs.scaleDensities();
+    	    	//System.out.println("im the best");
+    	    	
+    	    	characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.GREYSCALE);
     		}
     		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
     		{

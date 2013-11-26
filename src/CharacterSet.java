@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 
 
@@ -18,15 +19,44 @@ public class CharacterSet {
 	private Color BLACK = new Color(0,0,0);
 
 	
-	private static char[] TESTERS = { '^', '-', '-', '.', '.' };
+	
+	/**
+	 * Creates a new CharacterSet using the COURIER font.
+	 */
+	public CharacterSet(){
+		this("Courier");
+	}
+	public CharacterSet(String font){
+		this(createDefaultAscii(), font, 20);
+	}
+	private static Font getFont(String font, int size){
+		return new Font(font, Font.PLAIN, size);
+	}
+	public static char[] createDefaultAscii(){
+		// Make sure to use only given ASCII values [32, 126]
+		int start = 32;
+		int end = 126;
+		int arraySize = end - start;
+		char[] charArray = new char[arraySize];
+		
+		for(int i=start; i<end; i++){
+			// Character.toString ((char) i);
+			charArray[i-start] = (char) i;
+		}
+		return charArray;
+	}
+	public CharacterSet(char[] characters, String font, int size){
+		this(characters, getFont(font, size));
+	}
 	
 	public CharacterSet(char[] characters, Font font){
 		Canvas c = new Canvas();
 		FontMetrics fm = c.getFontMetrics(font);
-		int h = getHeight(TESTERS, font, fm);
+		//int h = getHeight(chars, font, fm);
 		int cLen = characters.length;
 		int totalW = 0;
 		chars = characters;
+		int h = getHeight(chars, font, fm);
 		//density = new DensityMap[cLen];
 		density = new double[cLen];
 		for(int i=0;i<cLen;i++)
@@ -108,6 +138,69 @@ public class CharacterSet {
 			}
 		}
 		return p / size;
+	}
+	
+	
+	public double[] getDensity()
+	{
+		return density;
+	}
+	public char[] getChars()
+	{
+		return chars;
+	}
+	
+	public void selectionSortArrays()
+	{
+		for(int i = 0; i < density.length - 1; i++){
+			int minInd = i;
+			//double minVal = density[i];
+			for(int j = i+1; j < density.length; j++){
+				if (density[j] < density[minInd]){
+					minInd = j;
+				}
+			}
+			if (minInd != i){
+				double intermediateDoub = density[i];
+				char intermediateChar = chars[i];
+				density[i] = density[minInd];
+				chars[i] = chars[minInd];
+				density[minInd] = intermediateDoub;
+				chars[minInd] = intermediateChar;
+			}
+		}
+	}
+	
+	public void removeArrayDuplicates()
+	{
+		int count = 1;
+		char[] newCharArr = new char[chars.length];
+		double[] newDenseArr = new double[density.length];
+		newDenseArr[0] = density[0];
+		newCharArr[0] = chars[0];
+		for(int i = 0; i < density.length - 1; i++)
+		{
+			if(density[i+1] > density[i])
+			{
+				newDenseArr[count] = density[i+1];
+				newCharArr[count] = chars[i+1];
+				count++;
+			}	
+		}
+		density = Arrays.copyOf(newDenseArr, count);
+		chars = Arrays.copyOf(newCharArr, count);
+	}
+	
+	public int[] scaleDensities()
+	{
+		int[] scaledArr = new int[density.length];
+		double maxVal = density[density.length-1];
+		for (int i = 0; i < density.length; i++)
+		{
+			scaledArr[i] = (int) ((density[i]/maxVal)*255);
+		}
+		
+		return scaledArr;
 	}
 }
 

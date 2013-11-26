@@ -28,7 +28,7 @@ public class TestMain {
 		BlockBrightness bb = new BlockBrightness();
 		int[][] dmatrix = bb.convertImageToBrightnessMatrix(bb.getImage());
 		CharacterProcess cp = new CharacterProcess();
-		cp.convertImageToAscii(dmatrix);
+		cp.convertImageToAscii(dmatrix, CharacterProcess.BLACKWHITE);
 //		double[][] test = cp.convertImageToBrightnessMatrix(cp.getImage());
 		
 		

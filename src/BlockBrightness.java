@@ -78,11 +78,11 @@ public class BlockBrightness {
 		for(int y=0; y<blkHeight; y++){
 			for(int x=0; x<blkWidth; x++){
 				int rgbVal = bImg.getRGB(x, y);
-				int r = (rgbVal)&0xFF;
-				int g = (rgbVal>>8)&0xFF;
-				int b = (rgbVal>>16)&0xFF;
+				int red = (rgbVal>>16)&0xFF;
+				int green = (rgbVal>>8)&0xFF;
+				int blue = (rgbVal)&0xFF;
 //				totalRgbVal = totalRgbVal + ((r+g+b)/3);
-				totalRgbVal = totalRgbVal + ((0.299*((float) r))+(0.587*((float) g))+(0.114*((float) b)));
+				totalRgbVal = totalRgbVal + ((0.299*((float) red))+(0.587*((float) green))+(0.114*((float) blue)));
 			}
 		}
 		

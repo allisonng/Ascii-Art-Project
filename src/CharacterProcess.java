@@ -11,10 +11,15 @@ import javax.imageio.ImageIO;
 
 
 public class CharacterProcess {
+	
+	public static int BLACKWHITE = 0;
+	public static int GREYSCALE = 1;
 
 	/* This is where the image will be subsampled.
 	 * Should also include method for finding brightness.
 	 */
+	public int[] density = null;
+	public char[] chars = null;
 	
 	BufferedImage bimg;
 	Font font;
@@ -27,7 +32,7 @@ public class CharacterProcess {
 		// Make sure to use only given ASCII values [32, 126]
 		int start = 32;
 		int end = 126;
-		int arraySize = 126 - 32;
+		int arraySize = end - start;
 		char[] charArray = new char[arraySize];
 		
 		for(int i=start; i<end; i++){
@@ -37,7 +42,7 @@ public class CharacterProcess {
 		
 	}
 		
-	public void convertImageToAscii(int[][] brightnessImage) throws IOException{
+	public void convertImageToAscii(int[][] brightnessImage, int AlgType) throws IOException{
 		// brightnessImage represents the brightness of the image from the divided subimages
 
 		int rowHeight = brightnessImage.length;
@@ -53,7 +58,10 @@ public class CharacterProcess {
 
 		for(int row=0; row<rowHeight; row++){
 			for(int col=0; col<colHeight; col++){
-				buffWriter.write(matchToChar(brightnessImage[row][col]));
+				if (AlgType == 0)
+					buffWriter.write(matchToChar(brightnessImage[row][col]));
+				else if (AlgType == 1)
+					buffWriter.write(matchGreyscaleToChar(brightnessImage[row][col], density, chars));
 				
 			}
 			buffWriter.write("\n");
@@ -130,62 +138,62 @@ public class CharacterProcess {
 			return ' ';
 		}
 		// one square dark
-		if(ul && ur && !ll && lr)
+		else if(ul && ur && !ll && lr)
 		{
 			return '.';
 		}
-		if(ul && ur && ll && !lr)
+		else if(ul && ur && ll && !lr)
 		{
 			return '.';
 		}
-		if(!ul && ur && ll && lr)
+		else if(!ul && ur && ll && lr)
 		{
 			return '`';
 		}
-		if(ul && !ur && ll && lr)
+		else if(ul && !ur && ll && lr)
 		{
 			return '\'';
 		}
 		//two adjacent square dark
-		if(!ul && !ur && ll && lr)
+		else if(!ul && !ur && ll && lr)
 		{
 			return '"';
 		}
-		if(ul && ur && !ll && !lr)
+		else if(ul && ur && !ll && !lr)
 		{
 			return '_';
 		}
-		if(!ul && ur && !ll && lr)
+		else if(!ul && ur && !ll && lr)
 		{
 			return '[';
 		}
-		if(ul && !ur && ll && !lr)
+		else if(ul && !ur && ll && !lr)
 		{
 			return ']';
 		}
 		//two nonadjacent squares
-		if(!ul && ur && ll && !lr)
+		else if(!ul && ur && ll && !lr)
 		{
 			return '\\';
 		}
-		if(ul && !ur && !ll && lr)
+		else if(ul && !ur && !ll && lr)
 		{
 			return '/';
 		}
 		//three square dark
-		if(!ul && !ur && !ll && lr)
+		else if(!ul && !ur && !ll && lr)
 		{
 			return 'P';
 		}
-		if(ul && !ur && !ll && !lr)
+		else if(ul && !ur && !ll && !lr)
 		{
 			return 'J';
 		}
-		if(!ul && ur && !ll && !lr)
+		else if(!ul && ur && !ll && !lr)
 		{
 			return 'L';
 		}
-		if(!ul && !ur && ll && !lr)
+		else if(!ul && !ur && ll && !lr)
 		{
 			return '7';
 		}
@@ -194,5 +202,26 @@ public class CharacterProcess {
 	}
 	
 	
+	
+	private char matchGreyscaleToChar(int brightness, int[] densityArr, char[] charArr)
+	{
+		for (int i = 1; i < densityArr.length; i++)
+		{
+			//value where brightness gets overtaken
+			if (brightness <= densityArr[i])
+			{
+				// if smaller, then closer
+				if (densityArr[i] - brightness <= brightness - densityArr[i-1])
+				{
+					return charArr[charArr.length-i-1];// i
+				}
+				else
+				{
+					return charArr[charArr.length-i];// i-1
+				}
+			}
+		}
+		return charArr[charArr.length-1];
+	}
 	
 }
