@@ -25,10 +25,11 @@ public class TestMain {
 		
 		// Font myFont = new Font("Courier", Font.PLAIN, 12);
 		
-		BlockBrightness bb = new BlockBrightness();
+/*		BlockBrightness bb = new BlockBrightness();
 		int[][] dmatrix = bb.convertImageToBrightnessMatrix(bb.getImage());
 		CharacterProcess cp = new CharacterProcess();
 		cp.convertImageToAscii(dmatrix, CharacterProcess.BLACKWHITE);
+*/
 //		double[][] test = cp.convertImageToBrightnessMatrix(cp.getImage());
 		
 		
@@ -43,7 +44,7 @@ public class TestMain {
 //		cp.convertImageToAscii(test);
 //		System.out.print("done conversion? check for file");
 		
-	
-		
+		String test = "abc" + 'd';
+		System.out.println(test);
 	}
 }

@@ -64,7 +64,8 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     		
     		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
     		{
-    			characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.BLACKWHITE);
+    			String convertedToAscii = characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.BLACKWHITE);
+    			characterProcessor.convertAsciiToText(convertedToAscii);
     		}
     		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
     		{
@@ -99,7 +100,8 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     	    	characterProcessor.density = cs.scaleDensities();
     	    	//System.out.println("im the best");
     	    	
-    	    	characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.GREYSCALE);
+    	    	String convertedToAscii = characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.GREYSCALE);
+    	    	characterProcessor.convertAsciiToText(convertedToAscii);    	    	
     		}
     		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
     		{

@@ -42,12 +42,28 @@ public class CharacterProcess {
 		
 	}
 		
-	public void convertImageToAscii(int[][] brightnessImage, int AlgType) throws IOException{
+	public String convertImageToAscii(int[][] brightnessImage, int AlgType) throws IOException{
 		// brightnessImage represents the brightness of the image from the divided subimages
 
 		int rowHeight = brightnessImage.length;
 		int colHeight = brightnessImage[0].length;
 
+		String convertedAscii = "";
+		
+		for(int row=0; row<rowHeight; row++){
+			for(int col=0; col<colHeight; col++){
+				if (AlgType == 0)
+					convertedAscii =  convertedAscii + matchToChar(brightnessImage[row][col]);
+				else if (AlgType == 1)
+					convertedAscii = convertedAscii + matchGreyscaleToChar(brightnessImage[row][col], density, chars);
+			}
+			convertedAscii = convertedAscii + "\n";
+		}		
+		
+		return convertedAscii;
+	}
+	
+	public void convertAsciiToText(String asciiText) throws IOException{
 		// Create new file to write to
 		File file = new File("asciiArt.txt");
 		if(!file.exists()){
@@ -55,20 +71,9 @@ public class CharacterProcess {
 		}
 		FileWriter fWriter = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter buffWriter = new BufferedWriter(fWriter);
-
-		for(int row=0; row<rowHeight; row++){
-			for(int col=0; col<colHeight; col++){
-				if (AlgType == 0)
-					buffWriter.write(matchToChar(brightnessImage[row][col]));
-				else if (AlgType == 1)
-					buffWriter.write(matchGreyscaleToChar(brightnessImage[row][col], density, chars));
-				
-			}
-			buffWriter.write("\n");
-		}
 		
+		buffWriter.write(asciiText);		
 		buffWriter.close();
-		
 		
 	}
 	
