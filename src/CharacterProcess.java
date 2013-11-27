@@ -15,9 +15,6 @@ public class CharacterProcess {
 	public static int BLACKWHITE = 0;
 	public static int GREYSCALE = 1;
 
-	/* This is where the image will be subsampled.
-	 * Should also include method for finding brightness.
-	 */
 	public int[] density = null;
 	public char[] chars = null;
 	
@@ -42,7 +39,7 @@ public class CharacterProcess {
 		
 	}
 		
-	public String convertImageToAscii(int[][] brightnessImage, int AlgType) throws IOException{
+	public String convertImageToAscii(int[][] brightnessImage, int AlgType){
 		// brightnessImage represents the brightness of the image from the divided subimages
 
 		int rowHeight = brightnessImage.length;
@@ -52,9 +49,9 @@ public class CharacterProcess {
 		
 		for(int row=0; row<rowHeight; row++){
 			for(int col=0; col<colHeight; col++){
-				if (AlgType == 0)
+				if (AlgType == BLACKWHITE)
 					convertedAscii =  convertedAscii + matchToChar(brightnessImage[row][col]);
-				else if (AlgType == 1)
+				else if (AlgType == GREYSCALE)
 					convertedAscii = convertedAscii + matchGreyscaleToChar(brightnessImage[row][col], density, chars);
 			}
 			convertedAscii = convertedAscii + "\n";
@@ -63,7 +60,25 @@ public class CharacterProcess {
 		return convertedAscii;
 	}
 	
-	public void convertAsciiToText(String asciiText) throws IOException{
+	public String convertQuadImageToAscii(int[][][] brightnessImage){
+		// brightnessImage represents the brightness of the image from the divided subimages
+		
+		int rowHeight = brightnessImage.length;
+		int colHeight = brightnessImage[0].length;
+		
+		String convertedAscii = "";
+		
+		for(int row=0; row<rowHeight; row++){
+			for(int col=0; col<colHeight; col++){
+				convertedAscii = convertedAscii + matchToQuadrantChar(brightnessImage[row][col]);				
+			}
+			convertedAscii = convertedAscii + "\n";
+		}
+		
+		return convertedAscii;
+	}
+	
+	public void convertAsciiToTextFile(String asciiText) throws IOException{
 		// Create new file to write to
 		File file = new File("asciiArt.txt");
 		if(!file.exists()){
@@ -75,6 +90,31 @@ public class CharacterProcess {
 		buffWriter.write(asciiText);		
 		buffWriter.close();
 		
+	}
+	
+	public void convertAsciiToHtmlFile(String asciiText) throws IOException{
+		/* 1. need monospaced font!
+		 * 2. white-space pre, preserves all existing formatting 
+		 * 		(so no auto word wrap or condensing white space)
+		 */
+		String htmlText = "\n<html>\n<head>\n\t<title>ASCII ART</title>" + 
+				"\n<style type=\"text/css\">" +
+				"\n\tbody{font-family: monospace; \n\twhite-space: pre;}" +
+				"\n</head>" + 
+				"\n</style>" +
+				"\n<body>\n" + asciiText + "\n</body>\n</html>";
+		
+		
+		File file = new File("asciiOnline.html");
+		if(!file.exists()){
+			file.createNewFile();
+		}
+		
+		FileWriter fWriter = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter buffWriter = new BufferedWriter(fWriter);
+		
+		buffWriter.write(htmlText);
+		buffWriter.close();
 	}
 	
 	private char matchToChar(int brightness){
@@ -89,33 +129,6 @@ public class CharacterProcess {
 			return ' ';
 		}
 				
-	}
-	
-	public void convertQuadImageToAscii(int[][][] brightnessImage) throws IOException{
-		// brightnessImage represents the brightness of the image from the divided subimages
-
-		int rowHeight = brightnessImage.length;
-		int colHeight = brightnessImage[0].length;
-
-		// Create new file to write to
-		File file = new File("asciiArt.txt");
-		if(!file.exists()){
-			file.createNewFile();
-		}
-		FileWriter fWriter = new FileWriter(file.getAbsoluteFile());
-		BufferedWriter buffWriter = new BufferedWriter(fWriter);
-
-		for(int row=0; row<rowHeight; row++){
-			for(int col=0; col<colHeight; col++){
-				buffWriter.write(matchToQuadrantChar(brightnessImage[row][col]));
-				
-			}
-			buffWriter.write("\n");
-		}
-		
-		buffWriter.close();
-		
-		
 	}
 	
 	private char matchToQuadrantChar(int[] quadrants)

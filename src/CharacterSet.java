@@ -75,6 +75,9 @@ public class CharacterSet {
 			}
 		}
 		ratioWH = (double)h/((double)totalW / (double)cLen);
+		
+    	selectionSortArrays();
+    	removeArrayDuplicates();
 	}
 	
 	private int getHeight(char[] chars, Font f, FontMetrics fm){
@@ -150,7 +153,7 @@ public class CharacterSet {
 		return chars;
 	}
 	
-	public void selectionSortArrays()
+	private void selectionSortArrays()
 	{
 		for(int i = 0; i < density.length - 1; i++){
 			int minInd = i;
@@ -171,7 +174,7 @@ public class CharacterSet {
 		}
 	}
 	
-	public void removeArrayDuplicates()
+	private void removeArrayDuplicates()
 	{
 		int count = 1;
 		char[] newCharArr = new char[chars.length];

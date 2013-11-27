@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -17,7 +18,8 @@ import java.io.IOException;
 
 public class AsciiArtGUI extends JFrame //implements ActionListener
 {
-    private PicturePanel inputPicPanel, outputPicPanel;
+    private PicturePanel inputPicPanel;
+    private JTextArea outputTextArea;
     private JFileChooser fileChooser;
     private BufferedImage inputImage;
     
@@ -25,6 +27,7 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
     private CharacterProcess characterProcessor;
     
     private JButton jButton1;
+    private JScrollPane jScrollPane;
     private JComboBox jComboBox1;
     private JComboBox jComboBox2;
     private JLabel jLabel1;
@@ -56,58 +59,48 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws IOException
     {
+    	String convertedToAscii = "";
     	
     	if (jComboBox2.getSelectedIndex() == 0)//naive black and white
     	{
+
     		//DO CONVERSION HERE
     		int[][] brightnessMatrix = blockIntensities.convertImageToBrightnessMatrix(inputImage);
-    		
-    		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
-    		{
-    			String convertedToAscii = characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.BLACKWHITE);
-    			characterProcessor.convertAsciiToText(convertedToAscii);
-    		}
-    		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
-    		{
-    			
-    		}
+    		convertedToAscii = characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.BLACKWHITE);
+
     	}
     	else if (jComboBox2.getSelectedIndex() == 1)//4 quadrant black and white
     	{
     		//DO CONVERSION HERE
     		int[][][] quadrantBrightness = blockIntensities.convertImageToBrightnessQuadrants(inputImage);
-    		
-    		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
-    		{
-    			characterProcessor.convertQuadImageToAscii(quadrantBrightness);
-    		}
-    		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
-    		{
-    			
-    		}
+    		convertedToAscii = characterProcessor.convertQuadImageToAscii(quadrantBrightness);
+
     	}
     	else if (jComboBox2.getSelectedIndex() == 2)//Many ASCII characters
     	{
     		//DO CONVERSION HERE
     		int[][] brightnessMatrix = blockIntensities.convertImageToBrightnessMatrix(inputImage);
     		
-    		if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
-    		{
-    	    	CharacterSet cs = new CharacterSet();
-    	    	cs.selectionSortArrays();
-    	    	cs.removeArrayDuplicates();
-    	    	characterProcessor.chars = cs.getChars();
-    	    	characterProcessor.density = cs.scaleDensities();
-    	    	//System.out.println("im the best");
+    	    CharacterSet cs = new CharacterSet();
+    	    characterProcessor.chars = cs.getChars();
+    	    characterProcessor.density = cs.scaleDensities();
+    	    //System.out.println("im the best");
     	    	
-    	    	String convertedToAscii = characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.GREYSCALE);
-    	    	characterProcessor.convertAsciiToText(convertedToAscii);    	    	
-    		}
-    		if (jComboBox1.getSelectedIndex() == 1)//convert to .html
-    		{
-    			
-    		}
+    	    convertedToAscii = characterProcessor.convertImageToAscii(brightnessMatrix, CharacterProcess.GREYSCALE);
     	}
+    	
+    	// Outputs it to the right hand side of GUI.
+    	outputTextArea.setText(convertedToAscii);
+    	
+    	if (jComboBox1.getSelectedIndex() == 0)//convert to .txt
+		{
+			characterProcessor.convertAsciiToTextFile(convertedToAscii);
+		}
+    	else if (jComboBox1.getSelectedIndex() == 1)//convert to .html
+		{
+			characterProcessor.convertAsciiToHtmlFile(convertedToAscii);
+		}
+    	
     }
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt)
@@ -135,36 +128,38 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
         }
     }
 	
-	
+
+    
     private void initComponents() {
 
         jLabel1 = new JLabel();
         jComboBox1 = new JComboBox();
         jButton1 = new JButton();
         inputPicPanel = new PicturePanel();
-        outputPicPanel = new PicturePanel();
         jComboBox2 = new JComboBox();
         jLabel2 = new JLabel();
+        jScrollPane = new JScrollPane();
+        outputTextArea = new JTextArea();
         jMenuBar1 = new JMenuBar();
         jMenu1 = new JMenu();
         jMenuItem1 = new JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("List of Algorithms:");
 
-        //jComboBox1.setEditable(true);
+        jComboBox1.setEditable(true);
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { ".TXT", ".HTML" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jComboBox1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
             }
         });
 
         jButton1.setText("CONVERT!");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+            	try {
 					jButton1ActionPerformed(evt);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -172,43 +167,38 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
             }
         });
 
-        javax.swing.GroupLayout inputPicPanelLayout = new javax.swing.GroupLayout(inputPicPanel);
-        inputPicPanel.setLayout(inputPicPanelLayout);
-        inputPicPanelLayout.setHorizontalGroup(
-            inputPicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        GroupLayout jPanel1Layout = new GroupLayout(inputPicPanel);
+        inputPicPanel.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 640, Short.MAX_VALUE)
         );
-        inputPicPanelLayout.setVerticalGroup(
-            inputPicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 480, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout outputPicPanelLayout = new javax.swing.GroupLayout(outputPicPanel);
-        outputPicPanel.setLayout(outputPicPanelLayout);
-        outputPicPanelLayout.setHorizontalGroup(
-            outputPicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
-        );
-        outputPicPanelLayout.setVerticalGroup(
-            outputPicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 480, Short.MAX_VALUE)
-        );
-
-        //jComboBox2.setEditable(true);
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Naive B&W", "4 Quadrant B&W", "Naive Greyscale" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jComboBox2.setEditable(true);
+        jComboBox2.setModel(new DefaultComboBoxModel(new String[] { "Naive B&W", "4 Quadrant B&W", "Naive Greyscale" }));
+        jComboBox2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 jComboBox2ActionPerformed(evt);
             }
         });
 
         jLabel2.setText("Convert to Format:");
 
+        outputTextArea.setColumns(20);
+        outputTextArea.setRows(5);
+        outputTextArea.setEditable(false);
+        outputTextArea.setFont(new Font("Courier", Font.PLAIN, 5));
+        jScrollPane.setViewportView(outputTextArea);
+
         jMenu1.setText("File");
 
         jMenuItem1.setText("Open Image");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
             }
         });
@@ -218,49 +208,49 @@ public class AsciiArtGUI extends JFrame //implements ActionListener
 
         setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboBox2, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(57, 57, 57)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(110, 110, 110)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(inputPicPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addComponent(outputPicPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE))
+                    .addComponent(inputPicPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane, GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(outputPicPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(inputPicPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane)
+                    .addComponent(inputPicPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBox2, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)))
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
